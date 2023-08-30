@@ -43,3 +43,23 @@ def test_len(trie):
     trie.insert("apple")
     trie.insert("app")
     assert len(trie) == 2
+
+
+def test_repr(trie):
+    trie.insert("apple")
+    trie.insert("app")
+    trie.insert("banana")
+    assert repr(trie) == (
+        "Root\n\n"
+        "( 1) A \n"
+        "     ( 1) P \n"
+        "          ( 1) P >\n"
+        "               ( 1) L \n"
+        "                    ( 1) E >\n"
+        "( 2) B \n"
+        "     ( 1) A \n"
+        "          ( 1) N \n"
+        "               ( 1) A \n"
+        "                    ( 1) N \n"
+        "                         ( 1) A >\n"
+    )
