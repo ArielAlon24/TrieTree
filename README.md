@@ -5,7 +5,7 @@ An implementation of a **Trie Tree** in Python. Reference: [link](https://en.wik
 ## Todo
 
 - [x] `insert`
-- [x] `print`
-- [ ] `remove`
-- [ ] `contains` and `__contains__` 
-- [ ] `__len__`
+- [x] `print` -> `__repr__`
+- [x] `remove`
+- [x] `contains` and `__contains__` 
+- [x] `__len__`
