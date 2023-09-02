@@ -1,4 +1,4 @@
-from typing import Optional, Self
+from typing import Optional, Self, List, Tuple
 from enum import Enum
 import string
 
@@ -22,46 +22,49 @@ class TrieNode:
         self.children = [None for _ in range(TrieNode.LETTERS_AMOUNT)]
         self.is_leaf = is_leaf
 
-    def insert(self, string: str, _pointer: int = 0) -> None:
-        if _pointer >= len(string):
-            return
+    def insert(self, string: str) -> None:
+        node = self
 
-        char = string[_pointer].upper()
-        index = ord(char) - TrieNode.A_ASCII
+        for pointer in range(len(string)):
+            char = string[pointer].upper()
+            index = ord(char) - TrieNode.A_ASCII
 
-        if not self.children[index]:
-            self.children[index] = TrieNode(value=char)
+            if not node.children[index]:
+                node.children[index] = TrieNode(value=char)
 
-        if _pointer == len(string) - 1:
-            self.children[index].is_leaf = True
+            node.children[index].is_leaf = pointer == len(string) - 1
 
-        return self.children[index].insert(string=string, _pointer=_pointer + 1)
+            node = node.children[index]
 
-    def remove(self, string: str, _pointer: int = 0) -> None:
-        if _pointer == len(string):
-            return
+    def remove(self, string: str) -> None:
+        stack: List[Tuple[Self, int]] = [(self, 0)]
 
-        index = ord(string[_pointer].upper()) - TrieNode.A_ASCII
-        child = self.children[index]
-        child.remove(string=string, _pointer=_pointer + 1)
+        while True:
+            node, pointer = stack.pop()
 
-        if _pointer == len(string) - 1:
-            child.is_leaf = False
+            if pointer == len(string):
+                break
 
-        if not any(child.children) and not child.is_leaf:
-            self.children[index] = None
+            index = ord(string[pointer].upper()) - TrieNode.A_ASCII
+            child = node.children[index]
+            stack.append((child, pointer + 1))
 
-    def find(self, string: str, _pointer: int = 0) -> FindStatus:
-        if _pointer == len(string):
-            return FindStatus.EXISTS
+            if pointer == len(string) - 1:
+                child.is_leaf = False
 
-        child = self.children[ord(string[_pointer].upper()) - TrieNode.A_ASCII]
+            if not any(node.children) and not child.is_leaf:
+                node.children[index] = None
 
-        if not child:
-            return FindStatus.ABSENT
-        elif _pointer == len(string) - 1 and child.is_leaf:
-            return FindStatus.FOUND
-        return child.find(string=string, _pointer=_pointer + 1)
+    def find(self, string: str) -> FindStatus:
+        node = self
+        for pointer in range(len(string)):
+            node = node.children[ord(string[pointer].upper()) - TrieNode.A_ASCII]
+            if not node:
+                return FindStatus.ABSENT
+            elif pointer == len(string) - 1 and node.is_leaf:
+                return FindStatus.FOUND
+
+        return FindStatus.EXISTS
 
     def __repr__(self, _padding: int = 0) -> str:
         if not any(self.children):
