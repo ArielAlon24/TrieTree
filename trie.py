@@ -32,7 +32,8 @@ class TrieNode:
             if not node.children[index]:
                 node.children[index] = TrieNode(value=char)
 
-            node.children[index].is_leaf = pointer == len(string) - 1
+            if pointer == len(string) - 1:
+                node.children[index].is_leaf = True
 
             node = node.children[index]
 
